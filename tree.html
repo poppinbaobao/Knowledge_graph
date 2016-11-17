@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <link href="stylesheets/jquery.contextMenu.min.css" rel="stylesheet" type="text/css">
+  <link href="stylesheets/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="stylesheets/diagram.css" rel="stylesheet" type="text/css">
+  <link href="stylesheets/bootstrap.min.css" rel="stylesheet"/>
+
+  <script src="javascripts/diagram.js"></script>
+  <script src="javascripts/d3.min.js"></script>
+  <script src="javascripts/jquery-2.2.4.min.js"></script>
+  <script src="javascripts/jquery.contextMenu.min.js"></script>
+  <script src="javascripts/jquery.ui.position.min.js"></script>
+  <script src="javascripts/bootstrap.min.js"></script>
+</head>
+<body>
+<div id="container1">
+</div>
+<!-- <div id="container2">
+</div>
+<input id="company" class="form-control" type="text">
+<input id="company1" class="form-control" type="text">
+<input id="company2" class="form-control" type="text"> -->
+<script>
+  windowWidth = $(window).width();//本机读取数据
+  $("#company")
+      .css("position", "absolute")
+      .css("top", "300px")
+      .css("left", ((windowWidth - 1000)/2-150)/2 + "px")
+      .css("width", "150px")
+  $("#company1")
+      .css("position", "absolute")
+      .css("top", "950px")
+      .css("left", ((windowWidth - 1000)/2-150)/2 + "px")
+      .css("width", "150px")
+  $("#company2")
+      .css("position", "absolute")
+      .css("top", "985px")
+      .css("left", ((windowWidth - 1000)/2-150)/2 + "px")
+      .css("width", "150px")
+  $("#container1")
+      .css("width", 1000)
+      .css("height", 600)
+      .css("margin", "0 auto")
+      .css("border", "1px solid grey")
+      .css("margin-top", "50px")
+      .css("margin-bottom","50px");
+  $("#container2")
+      .css("width", 1000)
+      .css("height", 600)
+      .css("margin", "0 auto")
+      .css("border", "1px solid grey")
+      .css("margin-top", "50px")
+      .css("margin-bottom", "50px")
+
+  //公司ID
+  //3983269
+  //3983274
+  //5069510
+  var stockId = "000990";
+  //tab1 内部pannel的id
+  var containerId_tree = "container-tree";
+  //tab2 内部pannel的id
+  var containerId_force = "container-force";
+  var diagram = DIAGRAM.init({
+    url: {
+      TREE_NODES: "/knowledge/nodetree?nodeID={nodeID}&layer={layer}&nodetype={nodetype}", // 公司投资关系数据url
+      PAIR_NODES: "/knowledge/nodepath?target={target}&source={source}&sourcetype={sourcetype}&targettype={targettype}", // 公司关联数据url
+      NODE_NAMES: "/knowledge/existname?name={stockID}",
+      COMPANY_DETAIL: "/knowledge/nodedetail?nodeID={nodeID}&nodetype={nodetype}&field={field}", // 公司详情url
+      NAME_SEARCH: "/knowledge/existname?name={stockID}",
+      SHAREHOLD_DETAIL:"",  // 公司股东详情页跳转url，暂无
+      INVEST_DETAIL:"", // 对外投资详情页跳转url，暂无
+      SENIORS_DETAIL:"",  //  公司主要成员详情页跳转url，暂无
+    },
+    container_tree:"#container1",
+    container_force:"#container2",
+    RP:{
+      changeTab:function(tabIndex){
+        //TODO RP前端进行tab切换
+      },
+      back2SearchPannel:function(){
+        //TODO RP前端将关系搜索区域改回搜索框
+        console.log("这里将#container2改成搜索框");
+      }
+    }
+  }).showTreeByStockIdOrName(stockId);//.showForce(56950330,56965267);//
+
+  $("#company").on("keyup", function(e){//监听输入框中的输入值，enter键启动tree的绘制
+    if(e.which == 13){//按下enter键之后的时候
+//      $.ajax({
+//        url: "knowledge/existname?name=" + $("#company").val(),
+//        success: function(d){
+//          if(d.data[$("#company").val()]){
+//            DIAGRAM.showTree(d.data[$("#company").val()].id);
+//          }
+//          else{
+//            $("#company")
+//                .tooltip({
+//                  title:'无此公司',
+//                  placement: 'bottom',
+//                  trigger: 'manual'
+//                })
+//                .tooltip("show")
+//            setTimeout(function(){$("#company").tooltip("destroy");}, 1500);
+//
+//          }
+//        },
+//        type: "GET",
+//        dataType: 'json',
+//      })
+      diagram.showTreeByStockIdOrName($("#company").val());
+    }
+  });
+
+  $("#company1,#company2").on("keyup", function(e){//监听输入框中的输入值，enter键启动force的绘制
+    if(e.which == 13){
+      diagram.showForceByStockIdOrName($("#company1").val(),$("#company2").val());
+//      $.ajax({
+//        url: "knowledge/existname?name=" + $("#company1").val() + ";" + $("#company2").val(),
+//        success: function(d){
+//          if(d.data[$("#company1").val()] && d.data[$("#company2").val()]){
+//            DIAGRAM.showForce(d.data[$("#company1").val()].id,d.data[$("#company2").val()].id);
+//          }
+//          else if(!d.data[$("#company1").val()]){
+//            $("#company1")
+//                .tooltip({
+//                  title:'无此公司',
+//                  placement: 'top',
+//                  trigger: 'manual'
+//                })
+//                .tooltip("show")
+//            setTimeout(function(){$("#company1").tooltip("destroy");}, 1500);
+//
+//          }
+//          else{
+//            $("#company2")
+//                .tooltip({
+//                  title:'无此公司',
+//                  placement: 'bottom',
+//                  trigger: 'manual'
+//                })
+//                .tooltip("show")
+//            setTimeout(function(){$("#company2").tooltip("destroy");}, 1500);
+//          }
+//        },
+//        type: "GET",
+//        dataType: 'json',
+//      })
+    }
+  });
+</script>
+</div>
+</body>
+</html>
